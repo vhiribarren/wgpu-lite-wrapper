@@ -97,10 +97,11 @@ impl WinitEventLoopHandler for ScenarioScheduler {
 
     fn on_update(&mut self, update_context: &UpdateContext) {
         self.scenario.camera_mut().update();
-        let camera_matrix = self.scenario.camera().get_camera_matrix();
-        self.scenario
-            .scene_mut()
-            .update(update_context, camera_matrix);
+        // TODO Should I keep the clone, or regorganize the code?
+        let scenario = &*self.scenario;
+        let camera = scenario.camera().camera.clone();
+        let scene = self.scenario.scene_mut();
+        scene.update(update_context, &camera);
         self.scenario.on_update(update_context);
     }
 
